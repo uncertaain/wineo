@@ -108,16 +108,27 @@ func getUptime() string {
 	time_since_last_boot -= float64(minutes) * 60
 
 	var hour = makePlural(hours, "hour")
-	var min = makePlural(minutes, "min")
+	var mints = makePlural(minutes, "min")
 
 	var date_str string
 	if hours > 0 {
-		date_str = fmt.Sprintf("%d %s, %d %s", hours, hour, minutes, min)
+		date_str = fmt.Sprintf("%d %s, %d %s", hours, hour, minutes, mints)
 	} else {
-		date_str = fmt.Sprintf("%d %s", minutes, min)
+		date_str = fmt.Sprintf("%d %s", minutes, mints)
 	}
 
 	return date_str
+}
+
+func getShell() string {
+	// assume that powershell is being used, so we just get Version
+	cmd := exec.Command("powershell", "$PsVersionTable.PSVersion.ToString()")
+	output, err := cmd.Output()
+	if err != nil {
+		panic(err)
+	}
+
+	return "powershell " + string(output)
 }
 
 func main() {
@@ -128,4 +139,6 @@ func main() {
 	fmt.Println(getHostName())
 	fmt.Println(getKernel())
 	fmt.Println(getUptime())
+	// usually package count is displayed after this but it doesn't really work for windows
+	fmt.Println(getShell())
 }

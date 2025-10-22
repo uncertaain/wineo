@@ -131,6 +131,30 @@ func getShell() string {
 	return "powershell " + string(output)
 }
 
+func getResolution() string {
+	cmd := exec.Command("wmic", "path", "Win32_VideoController", "get", "CurrentHorizontalResolution")
+	output, err := cmd.Output()
+
+	if err != nil {
+		return "Unknown Resolution"
+	}
+
+	output_lines := strings.Split(string(output), "\n")
+	horizontal := strings.TrimSpace(output_lines[1])
+
+	cmd = exec.Command("wmic", "path", "Win32_VideoController", "get", "CurrentVerticalResolution")
+	output, err = cmd.Output()
+	output_lines = strings.Split(string(output), "\n")
+
+	if err != nil {
+		return "Unknown Resolution"
+	}
+
+	vertical := strings.TrimSpace(output_lines[1])
+
+	return fmt.Sprintf("%sx%s", horizontal, vertical)
+}
+
 func main() {
 	getHost()
 	fmt.Println(getLoggedInUser())
@@ -141,4 +165,5 @@ func main() {
 	fmt.Println(getUptime())
 	// usually package count is displayed after this but it doesn't really work for windows
 	fmt.Println(getShell())
+	fmt.Println(getResolution())
 }

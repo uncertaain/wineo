@@ -11,6 +11,10 @@ import (
 	"github.com/elastic/go-sysinfo/types"
 )
 
+const (
+	mainColour = "\033[31;1m"
+)
+
 var (
 	host types.Host
 )
@@ -32,8 +36,9 @@ func getLoggedInUser() string {
 		return "Unknown User"
 	}
 	output_lines := strings.Split(string(output), "\n")
+	parts := strings.Split(output_lines[1], "\\")
 
-	return output_lines[1]
+	return strings.TrimSpace(parts[1]) + "@" + strings.TrimSpace(parts[0])
 }
 
 func getOs() string {
@@ -155,15 +160,45 @@ func getResolution() string {
 	return fmt.Sprintf("%sx%s", horizontal, vertical)
 }
 
+func getCPU() string {
+	cmd := exec.Command("wmic", "cpu", "get", "Name")
+	output, err := cmd.Output()
+
+	if err != nil {
+		return "Unknown CPU"
+	}
+	output_lines := strings.Split(string(output), "\n")
+
+	return output_lines[1]
+}
+
+func getGPU() string {
+	cmd := exec.Command("wmic", "path", "win32_VideoController", "get", "name")
+	output, err := cmd.Output()
+
+	if err != nil {
+		return "Unknown CPU"
+	}
+	output_lines := strings.Split(string(output), "\n")
+
+	return output_lines[1]
+}
+
+func displayInfo(tag string, data string) {
+	fmt.Println(mainColour + tag + ":\033[0m " + data)
+}
+
 func main() {
 	getHost()
-	fmt.Println(getLoggedInUser())
+	fmt.Println(mainColour + getLoggedInUser() + "\033[0m")
 	println()
-	fmt.Println(getOs())
-	fmt.Println(getHostName())
-	fmt.Println(getKernel())
-	fmt.Println(getUptime())
+	displayInfo("OS", getOs())
+	displayInfo("Host", getHostName())
+	displayInfo("Kernel", getKernel())
+	displayInfo("Uptime", getUptime())
 	// usually package count is displayed after this but it doesn't really work for windows
-	fmt.Println(getShell())
-	fmt.Println(getResolution())
+	displayInfo("Shell", getShell())
+	displayInfo("Resolution", getResolution())
+	displayInfo("CPU", getCPU())
+	displayInfo("GPU", getGPU())
 }

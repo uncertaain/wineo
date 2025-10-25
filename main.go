@@ -9,21 +9,22 @@ import (
 )
 
 const (
-	c1         = "\033[38;2;219;30;52m"
-	c2         = "\033[38;2;219;30;82m"
-	c3         = "\033[38;2;219;30;112m"
-	c4         = "\033[38;2;219;30;142m"
-	c5         = "\033[38;2;219;30;172m"
-	c6         = "\033[38;2;219;30;202m"
-	no_colour  = "\033[0m"
-	logo_width = 43
+	c1          = "\033[38;2;219;30;52m"
+	c2          = "\033[38;2;219;30;82m"
+	c3          = "\033[38;2;219;30;112m"
+	c4          = "\033[38;2;219;30;142m"
+	c5          = "\033[38;2;219;30;172m"
+	c6          = "\033[38;2;219;30;202m"
+	no_colour   = "\033[0m"
+	logo_width  = 43
+	logo_height = 20
+	bold        = "\033[1m"
 )
 
 var (
-	bold  = "\033[1m"
-	logos = map[string]string{
-		"dragon": `
-${c3}⠀⠀⠀⠀  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠢⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+	current_line = 0
+	logos        = map[string]string{
+		"dragon": `${c3}⠀⠀⠀⠀  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠢⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ${c1}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣶⠋⡆⢹⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ${c5}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡆⢀⣤⢛⠛⣠⣿⠀⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ${c6}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣶⣿⠟⣡⠊⣠⣾⣿⠃⣠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -204,6 +205,7 @@ func getGPU() string {
 }
 
 func displayInfo(tag string, data string) {
+	current_line++
 	goRightLine(logo_width)
 
 	if tag == "" {
@@ -230,16 +232,28 @@ func goUpLine(n int) {
 	fmt.Printf("\033[%dA", n)
 }
 
+func goDownLine(n int) {
+	fmt.Printf("\033[%dB", n)
+}
+
 func goRightLine(n int) {
 	fmt.Printf("\033[%dC", n)
 }
 
 func printWhitespace(n int) {
+	current_line += n
 	for range n {
 		println()
 	}
 }
 
+func finish() {
+	if current_line < logo_height {
+		goDownLine(logo_height - current_line)
+	}
+}
+
 func main() {
 	config()
+	finish()
 }

@@ -6,23 +6,21 @@ import (
 	"os/exec"
 	"strings"
 	"time"
-
-	sysinfo "github.com/elastic/go-sysinfo"
-	"github.com/elastic/go-sysinfo/types"
 )
 
 const (
-	c1        = "\033[38;2;219;30;52m"
-	c2        = "\033[38;2;219;30;82m"
-	c3        = "\033[38;2;219;30;112m"
-	c4        = "\033[38;2;219;30;142m"
-	c5        = "\033[38;2;219;30;172m"
-	c6        = "\033[38;2;219;30;202m"
-	no_colour = "\033[0m"
+	c1         = "\033[38;2;219;30;52m"
+	c2         = "\033[38;2;219;30;82m"
+	c3         = "\033[38;2;219;30;112m"
+	c4         = "\033[38;2;219;30;142m"
+	c5         = "\033[38;2;219;30;172m"
+	c6         = "\033[38;2;219;30;202m"
+	no_colour  = "\033[0m"
+	logo_width = 43
 )
 
 var (
-	host  types.Host
+	bold  = "\033[1m"
 	logos = map[string]string{
 		"dragon": `
 ${c3}⠀⠀⠀⠀  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠢⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -48,15 +46,6 @@ ${c5}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠛⠀⠀⠀⠀
 `,
 	}
 )
-
-func getHost() {
-	h, err := sysinfo.Host()
-	if err != nil {
-		panic(err)
-	}
-
-	host = h
-}
 
 func getLoggedInUser() string {
 	cmd := exec.Command("wmic", "computersystem", "get", "username")
@@ -207,7 +196,7 @@ func getGPU() string {
 	output, err := cmd.Output()
 
 	if err != nil {
-		return "Unknown CPU"
+		return "Unknown GPU"
 	}
 	output_lines := strings.Split(string(output), "\n")
 
@@ -215,7 +204,13 @@ func getGPU() string {
 }
 
 func displayInfo(tag string, data string) {
-	fmt.Println(c1 + tag + ":\033[0m " + data)
+	goRightLine(logo_width)
+
+	if tag == "" {
+		fmt.Println(c1 + bold + data + "\033[0m")
+		return
+	}
+	fmt.Println(c1 + bold + tag + ":\033[0m " + data)
 }
 
 func displayLogo(logo string) {
@@ -227,22 +222,24 @@ func displayLogo(logo string) {
 	logo_data = strings.Replace(logo_data, "${c5}", c5, -1)
 	logo_data = strings.Replace(logo_data, "${c6}", c6, -1)
 
-	fmt.Println(logo_data + no_colour)
+	fmt.Print(bold + logo_data)
+	goUpLine(strings.Count(logo_data, "\n"))
+}
+
+func goUpLine(n int) {
+	fmt.Printf("\033[%dA", n)
+}
+
+func goRightLine(n int) {
+	fmt.Printf("\033[%dC", n)
+}
+
+func printWhitespace(n int) {
+	for range n {
+		println()
+	}
 }
 
 func main() {
-	getHost()
-
-	displayLogo("dragon")
-	fmt.Println(c1 + getLoggedInUser() + "\033[0m")
-	println()
-	displayInfo("OS", getOs())
-	displayInfo("Host", getHostName())
-	displayInfo("Kernel", getKernel())
-	displayInfo("Uptime", getUptime())
-	// usually package count is displayed after this but it doesn't really work for windows
-	displayInfo("Shell", getShell())
-	displayInfo("Resolution", getResolution())
-	displayInfo("CPU", getCPU())
-	displayInfo("GPU", getGPU())
+	config()
 }

@@ -9,6 +9,8 @@ package main
 func config() {
 	displayLogo("dragon")
 
+	moveInfoLeft(20)
+
 	printWhitespace(3)
 	displayInfo("", getLoggedInUser())
 	displayInfo("", "----------")

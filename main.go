@@ -6,22 +6,23 @@ import (
 	"os/exec"
 	"strings"
 	"time"
+	"unicode/utf8"
 )
 
 const (
-	c1          = "\033[38;2;219;30;52m"
-	c2          = "\033[38;2;219;30;82m"
-	c3          = "\033[38;2;219;30;112m"
-	c4          = "\033[38;2;219;30;142m"
-	c5          = "\033[38;2;219;30;172m"
-	c6          = "\033[38;2;219;30;202m"
-	no_colour   = "\033[0m"
-	logo_width  = 43
-	logo_height = 19
-	bold        = "\033[1m"
+	c1        = "\033[38;2;219;30;52m"
+	c2        = "\033[38;2;219;30;82m"
+	c3        = "\033[38;2;219;30;112m"
+	c4        = "\033[38;2;219;30;142m"
+	c5        = "\033[38;2;219;30;172m"
+	c6        = "\033[38;2;219;30;202m"
+	no_colour = "\033[0m"
+	bold      = "\033[1m"
 )
 
 var (
+	logo_width   int
+	logo_height  int
 	current_line = 0
 	logos        = map[string]string{
 		"dragon": `${c3}⠀⠀⠀⠀  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠢⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -43,7 +44,7 @@ ${c6}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢋⡟⢠⣿⣿⣿⠋
 ${c1}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠚⢲⣿⠀⣾⣿⣿⠁⠀⠀⠉⢷⡀⠀⠀⣇⠀⠀⠈⠻⡀⠀⠀⠀⠀⠀
 ${c4}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢢⣀⣿⡏⠀⣿⡿⠀⠀⠀⠀⠀⠀⠙⣦⠀⢧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ${c3}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠿⣧⣾⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣮⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-${c5}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠛⠀⠀⠀⠀`,
+${c5}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠛⠀⠀⠀⠀                 `,
 	}
 )
 
@@ -223,8 +224,17 @@ func displayLogo(logo string) {
 	logo_data = strings.Replace(logo_data, "${c5}", c5, -1)
 	logo_data = strings.Replace(logo_data, "${c6}", c6, -1)
 
+	lines := strings.Split(logo_data, "\n")
+
+	logo_height = len(lines)
+	logo_width = utf8.RuneCountInString(lines[0])
+
 	fmt.Print(bold + logo_data)
 	goUpLine(strings.Count(logo_data, "\n"))
+}
+
+func moveInfoLeft(n int) {
+	logo_width -= n
 }
 
 func goUpLine(n int) {

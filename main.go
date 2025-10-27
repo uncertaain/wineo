@@ -3,24 +3,26 @@ package main
 import (
 	"fmt"
 	"math"
+	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 	"time"
 	"unicode/utf8"
 )
 
 const (
-	c1        = "\033[38;2;219;30;52m"
-	c2        = "\033[38;2;219;30;82m"
-	c3        = "\033[38;2;219;30;112m"
-	c4        = "\033[38;2;219;30;142m"
-	c5        = "\033[38;2;219;30;172m"
-	c6        = "\033[38;2;219;30;202m"
 	no_colour = "\033[0m"
 	bold      = "\033[1m"
 )
 
 var (
+	c1           string
+	c2           string
+	c3           string
+	c4           string
+	c5           string
+	c6           string
 	logo_width   int
 	logo_height  int
 	current_line = 0
@@ -47,6 +49,36 @@ ${c3}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠿⣧⣾⣿⠀⠀⠀⠀
 ${c5}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠛⠀⠀⠀⠀                 `,
 	}
 )
+
+func loadLogo(name string) {
+	re, err := regexp.Compile(`\[rgb\((\d+,\d+,\d+)\) rgb\((\d+,\d+,\d+)\) rgb\((\d+,\d+,\d+)\) rgb\((\d+,\d+,\d+)\) rgb\((\d+,\d+,\d+)\) rgb\((\d+,\d+,\d+)\)\]`)
+	if err != nil {
+		panic(err)
+	}
+
+	// probably check that the file exists before it gets to this
+	data, err := os.ReadFile(fmt.Sprintf("logos/%s.txt", name))
+	if err != nil {
+		panic(err)
+	}
+
+	lines := strings.Split(string(data), "\n")
+	colours := lines[0]
+
+	// take the zero index here because I say so
+	colour_info := re.FindAllStringSubmatch(colours, -1)[0]
+	if len(colour_info) < 7 {
+		println("Error: not enough colour information provided within logo declaration")
+		return
+	}
+
+	c1 = fmt.Sprintf("\033[38;2;%sm", strings.ReplaceAll(colour_info[1], ",", ";"))
+	c2 = fmt.Sprintf("\033[38;2;%sm", strings.ReplaceAll(colour_info[2], ",", ";"))
+	c3 = fmt.Sprintf("\033[38;2;%sm", strings.ReplaceAll(colour_info[3], ",", ";"))
+	c4 = fmt.Sprintf("\033[38;2;%sm", strings.ReplaceAll(colour_info[4], ",", ";"))
+	c5 = fmt.Sprintf("\033[38;2;%sm", strings.ReplaceAll(colour_info[5], ",", ";"))
+	c6 = fmt.Sprintf("\033[38;2;%sm", strings.ReplaceAll(colour_info[6], ",", ";"))
+}
 
 func getLoggedInUser() string {
 	cmd := exec.Command("wmic", "computersystem", "get", "username")
@@ -271,6 +303,8 @@ func showCursor() {
 }
 
 func main() {
+	loadLogo("dragon")
+
 	hideCursor()
 	config()
 	finish()

@@ -7,11 +7,11 @@ package main
 //
 
 func config() {
-	displayLogo("dragon")
+	displayLogo("windows")
 
-	moveInfoLeft(20)
+	moveInfoLeft(0)
 
-	printWhitespace(3)
+	// printWhitespace(3)
 	displayInfo("", getLoggedInUser())
 	displayInfo("", "----------")
 

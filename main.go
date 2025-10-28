@@ -38,7 +38,8 @@ func loadLogo(name string) {
 	// probably check that the file exists before it gets to this
 	data, err := os.ReadFile(fmt.Sprintf("logos/%s.txt", name))
 	if err != nil {
-		panic(err)
+		fmt.Printf("Tried reading file logos/%s.txt but no file was found", name)
+		return
 	}
 
 	lines := strings.Split(string(data), "\n")
@@ -172,7 +173,7 @@ func getShell() string {
 		panic(err)
 	}
 
-	return "powershell " + string(output)
+	return "powershell " + strings.TrimSpace(string(output))
 }
 
 func getResolution() string {
@@ -253,6 +254,7 @@ func displayLogo(logo string) {
 
 	fmt.Print(bold + logo_data)
 	goUpLine(strings.Count(logo_data, "\n"))
+	current_line = 0
 }
 
 func moveInfoLeft(n int) {

@@ -1,20 +1,20 @@
-[rgb(0,0,255) rgb(0,0,0) rgb(0,0,0) rgb(0,0,0) rgb(0,0,0) rgb(0,0,0)]
-${c1}                                ..,
-                    ....,,:;+ccllll
-      ...,,+:;  cllllllllllllllllll
-,cclllllllllll  lllllllllllllllllll
-llllllllllllll  lllllllllllllllllll
-llllllllllllll  lllllllllllllllllll
-llllllllllllll  lllllllllllllllllll
-llllllllllllll  lllllllllllllllllll
-llllllllllllll  lllllllllllllllllll
+[rgb(5,166,240) rgb(243,83,37) rgb(129,188,6) rgb(255,186,8) rgb(0,0,0) rgb(0,0,0)]
+${c3}                                ..,
+${c3}                    ....,,:;+ccllll
+${c2}      ...,,+:;  ${c3}cllllllllllllllllll
+${c2},cclllllllllll  ${c3}lllllllllllllllllll
+${c2}llllllllllllll  ${c3}lllllllllllllllllll
+${c2}llllllllllllll  ${c3}lllllllllllllllllll
+${c2}llllllllllllll  ${c3}lllllllllllllllllll
+${c2}llllllllllllll  ${c3}lllllllllllllllllll
+${c2}llllllllllllll  ${c3}lllllllllllllllllll
 
-llllllllllllll  lllllllllllllllllll
-llllllllllllll  lllllllllllllllllll
-llllllllllllll  lllllllllllllllllll
-llllllllllllll  lllllllllllllllllll
-llllllllllllll  lllllllllllllllllll
-`'ccllllllllll  lllllllllllllllllll
-       `' \\*::  :ccllllllllllllllll
-                       ````''*::cll
-                                 ``
+${c1}llllllllllllll  ${c4}lllllllllllllllllll
+${c1}llllllllllllll  ${c4}lllllllllllllllllll
+${c1}llllllllllllll  ${c4}lllllllllllllllllll
+${c1}llllllllllllll  ${c4}lllllllllllllllllll
+${c1}llllllllllllll  ${c4}lllllllllllllllllll
+${c1}`'ccllllllllll  ${c4}lllllllllllllllllll
+${c1}       `' \\*:: ${c4} :ccllllllllllllllll
+                     ${c4}  ````''*::cll
+                                 ${c4}``

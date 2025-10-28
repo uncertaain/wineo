@@ -78,7 +78,6 @@ func getLoggedInUser() string {
 	output_lines := strings.Split(string(output), "\n")
 	parts := strings.Split(output_lines[1], "\\")
 
-	return "ME@MY-DESKTOP"
 	return strings.TrimSpace(parts[1]) + "@" + strings.TrimSpace(parts[0])
 }
 

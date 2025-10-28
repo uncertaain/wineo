@@ -16,7 +16,7 @@ func config() {
 	displayInfo("", "----------")
 
 	displayInfo("OS", getOs())
-	displayInfo("Host", getHostName())
+	// displayInfo("Host", getHostName())
 	displayInfo("Kernel", getKernel())
 	displayInfo("Uptime", getUptime())
 
